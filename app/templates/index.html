@@ -8,7 +8,8 @@
     <form action="/weights/" method="post">
       <input type="text" name="weight">
       <input type="submit" value="保存">
-      <p>{{.Result}}</p>
+      <p>今日の体重: {{.TodayWeight}} g</p>
+      <p>昨日の体重: {{.YesterdayWeight}} g</p>
     </form>
   </body>
 </html>

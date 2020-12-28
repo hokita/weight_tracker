@@ -11,3 +11,15 @@ services:
       - ./app:/go
     ports:
       - "8080:8080"
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/postgres/Dockerfile
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=weight_tracker
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:
