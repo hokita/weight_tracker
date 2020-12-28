@@ -67,7 +67,7 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	tpl := template.Must(template.ParseFiles("templates/index.html"))
 	m := map[string]string{
 		"TodayWeight":     strconv.Itoa(weight.Weight),
-		"YesterdayWeight": strconv.Itoa(weight.Weight),
+		"YesterdayWeight": strconv.Itoa(YesterdayWeight.Weight),
 	}
 	tpl.Execute(w, m)
 }
