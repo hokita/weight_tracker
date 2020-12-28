@@ -29,6 +29,7 @@ func (h *getWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, 1))
 
 	m := map[string]string{
+		"Now":             time.Now().Format("2006-01-02 Mon"),
 		"TodayWeight":     strconv.Itoa(todayWeight.Weight),
 		"YesterdayWeight": strconv.Itoa(YesterdayWeight.Weight),
 	}
@@ -66,6 +67,7 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	tpl := template.Must(template.ParseFiles("templates/index.html"))
 	m := map[string]string{
+		"Now":             time.Now().Format("2006-01-02 Mon"),
 		"TodayWeight":     strconv.Itoa(weight.Weight),
 		"YesterdayWeight": strconv.Itoa(YesterdayWeight.Weight),
 	}
