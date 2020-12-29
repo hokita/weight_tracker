@@ -26,7 +26,7 @@ func (h *getWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var todayWeight Weight
 	var YesterdayWeight Weight
 	h.DB.First(&todayWeight, "date = ?", time.Now())
-	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, 1))
+	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, -1))
 
 	m := map[string]string{
 		"Now":             time.Now().Format("2006-01-02 Mon"),
@@ -63,7 +63,7 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	var YesterdayWeight Weight
-	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, 1))
+	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, -1))
 
 	tpl := template.Must(template.ParseFiles("templates/index.html"))
 	m := map[string]string{
