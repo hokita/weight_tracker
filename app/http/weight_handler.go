@@ -73,3 +73,23 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 	tpl.Execute(w, m)
 }
+
+type getAllWeightsHandler struct {
+	DB *gorm.DB
+}
+
+func (h *getAllWeightsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var weights []Weight
+	result := h.DB.Order("date desc").Find(&weights)
+	if result.Error != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	tpl := template.Must(template.ParseFiles("templates/all.html"))
+	m := map[string]interface{}{
+		"Len":     len(weights),
+		"Weights": weights,
+	}
+	tpl.Execute(w, m)
+}

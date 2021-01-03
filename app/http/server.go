@@ -21,6 +21,7 @@ func Start() error {
 	r := mux.NewRouter()
 	r.Handle("/", &getWeightHandler{db}).Methods("GET")
 	r.Handle("/weights/", &createWeightHandler{db}).Methods("POST")
+	r.Handle("/weights/all/", &getAllWeightsHandler{db}).Methods("GET")
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		return err
