@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
-import {render} from 'react-dom';
+import React, { useState, useEffect } from 'react'
+import {render} from 'react-dom'
+import axios from 'axios'
 
 function App() {
   const [weight, setWeight] = useState(0)
   const [yesterdayWeight, setYesterdayWeight] = useState(0)
+
+  useEffect(() => {
+    const fetchData = async ()  => {
+      const result = await axios.get(`http://localhost:8080/`)
+      setWeight(result.data.weight.weight)
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <React.Fragment>
@@ -19,4 +29,4 @@ function App() {
   )
 }
 
-render(<App/>, document.getElementById('app'));
+render(<App/>, document.getElementById('app'))

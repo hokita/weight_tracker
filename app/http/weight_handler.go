@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -10,12 +11,19 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// Weight struct
 type Weight struct {
 	ID        int       `json:"id"`
 	Weight    int       `json:"weight"`
 	Date      time.Time `json:"date"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// TopParams struct
+type TopParams struct {
+	Weight          Weight `json:"weight"`
+	YesterdayWeight Weight `json:"yesterday_weight"`
 }
 
 type getWeightHandler struct {
@@ -28,14 +36,13 @@ func (h *getWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.DB.First(&todayWeight, "date = ?", time.Now())
 	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, -1))
 
-	m := map[string]string{
-		"Now":             time.Now().Format("2006-01-02 Mon"),
-		"TodayWeight":     strconv.Itoa(todayWeight.Weight),
-		"YesterdayWeight": strconv.Itoa(YesterdayWeight.Weight),
+	tp := TopParams{
+		Weight:          todayWeight,
+		YesterdayWeight: YesterdayWeight,
 	}
-
-	tpl := template.Must(template.ParseFiles("templates/index.html"))
-	tpl.Execute(w, m)
+	if err := json.NewEncoder(w).Encode(tp); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 type createWeightHandler struct {

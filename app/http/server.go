@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Start function
 func Start() error {
 	fmt.Println("start server")
 
