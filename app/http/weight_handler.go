@@ -31,6 +31,8 @@ type getWeightHandler struct {
 }
 
 func (h *getWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	var todayWeight Weight
 	var YesterdayWeight Weight
 	h.DB.First(&todayWeight, "date = ?", time.Now())
