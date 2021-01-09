@@ -23,5 +23,17 @@ services:
       - POSTGRES_DB=weight_tracker
     volumes:
       - db-data:/var/lib/postgresql/data
+  front:
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./front:/usr/src/app
+    stdin_open: true
+    ports:
+      - "8081:8080"
+    command: sh -c "yarn start"
 volumes:
   db-data:
