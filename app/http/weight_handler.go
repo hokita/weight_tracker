@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"html/template"
 	"net/http"
 	"time"
 
@@ -91,6 +90,8 @@ type getAllWeightsHandler struct {
 }
 
 func (h *getAllWeightsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	var weights []Weight
 	result := h.DB.Order("date desc").Find(&weights)
 	if result.Error != nil {
@@ -98,10 +99,7 @@ func (h *getAllWeightsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	tpl := template.Must(template.ParseFiles("templates/all.html"))
-	m := map[string]interface{}{
-		"Len":     len(weights),
-		"Weights": weights,
+	if err := json.NewEncoder(w).Encode(weights); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 	}
-	tpl.Execute(w, m)
 }

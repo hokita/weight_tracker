@@ -3,9 +3,10 @@ import { render } from 'react-dom'
 import axios from 'axios'
 import moment from 'moment'
 
-function App() {
+const App = () => {
   const [weight, setWeight] = useState(0)
   const [yesterdayWeight, setYesterdayWeight] = useState(0)
+  const [weights, setWeights] = useState([])
   const [value, setValue] = useState('')
   const date = new Date()
 
@@ -38,6 +39,14 @@ function App() {
     })
   }
 
+  const handleGetWeights = (event) => {
+    event.preventDefault()
+
+    axios.get(`http://localhost:8080/weights/all/`).then((result) => {
+      setWeights(result.data)
+    })
+  }
+
   return (
     <React.Fragment>
       <h1>わさ体重記録</h1>
@@ -53,8 +62,32 @@ function App() {
         <p>今日の体重: {weight} g</p>
         <p>昨日の体重: {yesterdayWeight} g</p>
       </form>
-      <a href="/weights/all/">記録</a>
+      <a onClick={handleGetWeights}>記録</a>
+      <List weights={weights} />
     </React.Fragment>
+  )
+}
+
+const List = (props) => {
+  if (props.weights.length == 0) return null
+
+  return (
+    <table width="200" border="1" style={{ borderCollapse: 'collapse' }}>
+      <tbody>
+        <tr>
+          <th>日付</th>
+          <th>体重</th>
+        </tr>
+        {props.weights.map((weight, index) => {
+          return (
+            <tr key={index}>
+              <td align="center">{moment(weight.date).format('YYYY-MM-DD')}</td>
+              <td align="center">{weight.weight} g</td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
   )
 }
 
