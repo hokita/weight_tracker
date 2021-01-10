@@ -30,8 +30,12 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const params = JSON.stringify({ weight: parseInt(value) })
-    axios.post(`http://localhost:8080/`, params)
+    const newWeight = parseInt(value)
+    const params = JSON.stringify({ weight: newWeight })
+    axios.post(`http://localhost:8080/`, params).then(() => {
+      setWeight(newWeight)
+      setValue('')
+    })
   }
 
   return (
