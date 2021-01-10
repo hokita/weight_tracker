@@ -20,9 +20,10 @@ func Start() error {
 	}
 
 	r := mux.NewRouter()
-	r.Handle("/", &getWeightHandler{db}).Methods("GET")
-	r.Handle("/weights/", &createWeightHandler{db}).Methods("POST")
-	r.Handle("/weights/all/", &getAllWeightsHandler{db}).Methods("GET")
+	r.Handle("/", &getWeightHandler{db}).Methods(http.MethodGet)
+	r.Handle("/", &createWeightHandler{db}).Methods(http.MethodPost, http.MethodOptions)
+	r.Handle("/weights/all/", &getAllWeightsHandler{db}).Methods(http.MethodGet)
+	r.Use(mux.CORSMethodMiddleware(r))
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		return err

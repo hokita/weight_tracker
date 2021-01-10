@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"html/template"
 	"net/http"
-	"strconv"
 	"time"
 
 	"gorm.io/gorm"
@@ -52,13 +51,26 @@ type createWeightHandler struct {
 }
 
 func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	i, err := strconv.Atoi(r.FormValue("weight"))
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	var params struct {
+		Weight int `json:"weight"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	weight := Weight{
-		Weight: i,
+		Weight: params.Weight,
 		Date:   time.Now(),
 	}
 
@@ -71,16 +83,7 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var YesterdayWeight Weight
-	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, -1))
-
-	tpl := template.Must(template.ParseFiles("templates/index.html"))
-	m := map[string]string{
-		"Now":             time.Now().Format("2006-01-02 Mon"),
-		"TodayWeight":     strconv.Itoa(weight.Weight),
-		"YesterdayWeight": strconv.Itoa(YesterdayWeight.Weight),
-	}
-	tpl.Execute(w, m)
+	w.WriteHeader(http.StatusOK)
 }
 
 type getAllWeightsHandler struct {
