@@ -25,7 +25,7 @@ func Start() error {
 	r.Handle("/weights/all/", &getAllWeightsHandler{db}).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":8081", r); err != nil {
 		return err
 	}
 

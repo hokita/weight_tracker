@@ -12,7 +12,7 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`http://localhost:8080/`)
+      const result = await axios.get(`http://localhost:8081/`)
       setWeight(result.data.weight.weight)
       setYesterdayWeight(result.data.yesterday_weight.weight)
     }
@@ -33,7 +33,7 @@ const App = () => {
 
     const newWeight = parseInt(value)
     const params = JSON.stringify({ weight: newWeight })
-    axios.post(`http://localhost:8080/`, params).then(() => {
+    axios.post(`http://localhost:8081/`, params).then(() => {
       setWeight(newWeight)
       setValue('')
     })
@@ -42,7 +42,7 @@ const App = () => {
   const handleGetWeights = (event) => {
     event.preventDefault()
 
-    axios.get(`http://localhost:8080/weights/all/`).then((result) => {
+    axios.get(`http://localhost:8081/weights/all/`).then((result) => {
       setWeights(result.data)
     })
   }

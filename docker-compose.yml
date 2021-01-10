@@ -10,7 +10,7 @@ services:
     volumes:
       - ./app:/go
     ports:
-      - "8080:8080"
+      - "8081:8081"
     depends_on:
       - db
   db:
@@ -33,7 +33,7 @@ services:
       - ./front:/usr/src/app
     stdin_open: true
     ports:
-      - "8081:8081"
+      - "8080:8080"
     command: sh -c "yarn start"
 volumes:
   db-data:

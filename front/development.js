@@ -1,7 +1,7 @@
 import path from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
-const src  = path.resolve(__dirname, 'src')
+const src = path.resolve(__dirname, 'src')
 const dist = path.resolve(__dirname, 'dist')
 
 export default {
@@ -10,7 +10,7 @@ export default {
 
   output: {
     path: dist,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
 
   module: {
@@ -22,24 +22,23 @@ export default {
         options: {
           plugins: ['@babel/plugin-transform-runtime'],
         },
-
-      }
-    ]
+      },
+    ],
   },
 
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
   },
 
   devServer: {
-    host: "0.0.0.0",
-    port: 8081
+    host: '0.0.0.0',
+    port: 8080,
   },
 
   plugins: [
     new HtmlWebpackPlugin({
       template: src + '/index.html',
-      filename: 'index.html'
-    })
-  ]
+      filename: 'index.html',
+    }),
+  ],
 }
