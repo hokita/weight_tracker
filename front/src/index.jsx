@@ -3,6 +3,8 @@ import { render } from 'react-dom'
 import axios from 'axios'
 import moment from 'moment'
 
+const apiURL = `http://${process.env.API_DOMAIN}:8081/`
+
 const App = () => {
   const [weight, setWeight] = useState(0)
   const [yesterdayWeight, setYesterdayWeight] = useState(0)
@@ -12,7 +14,7 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`http://localhost:8081/`)
+      const result = await axios.get(apiURL)
       setWeight(result.data.weight.weight)
       setYesterdayWeight(result.data.yesterday_weight.weight)
     }
@@ -33,7 +35,7 @@ const App = () => {
 
     const newWeight = parseInt(value)
     const params = JSON.stringify({ weight: newWeight })
-    axios.post(`http://localhost:8081/`, params).then(() => {
+    axios.post(apiURL, params).then(() => {
       setWeight(newWeight)
       setValue('')
     })
@@ -42,7 +44,7 @@ const App = () => {
   const handleGetWeights = (event) => {
     event.preventDefault()
 
-    axios.get(`http://localhost:8081/weights/all/`).then((result) => {
+    axios.get(apiURL + 'weights/all/').then((result) => {
       setWeights(result.data)
     })
   }

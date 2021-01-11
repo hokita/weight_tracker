@@ -24,6 +24,8 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
   front:
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./docker/node/Dockerfile

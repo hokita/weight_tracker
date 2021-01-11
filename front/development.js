@@ -1,5 +1,6 @@
 import path from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import webpack from 'webpack'
 
 const src = path.resolve(__dirname, 'src')
 const dist = path.resolve(__dirname, 'dist')
@@ -39,6 +40,11 @@ export default {
     new HtmlWebpackPlugin({
       template: src + '/index.html',
       filename: 'index.html',
+    }),
+    new webpack.DefinePlugin({
+      'process.env.API_DOMAIN': JSON.stringify(
+        process.env.API_DOMAIN || 'localhost'
+      ),
     }),
   ],
 }
