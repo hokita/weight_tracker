@@ -10,6 +10,8 @@ const App = () => {
   const [yesterdayWeight, setYesterdayWeight] = useState(0)
   const [weights, setWeights] = useState([])
   const [value, setValue] = useState('')
+  const [listToggle, setListToggle] = useState(false)
+
   const date = new Date()
 
   useEffect(() => {
@@ -44,9 +46,13 @@ const App = () => {
   const handleGetWeights = (event) => {
     event.preventDefault()
 
-    axios.get(apiURL + 'weights/all/').then((result) => {
-      setWeights(result.data)
-    })
+    if (weights.length === 0) {
+      axios.get(apiURL + 'weights/all/').then((result) => {
+        setWeights(result.data)
+      })
+    }
+
+    setListToggle(!listToggle)
   }
 
   return (
@@ -64,14 +70,14 @@ const App = () => {
         <p>今日の体重: {weight} g</p>
         <p>昨日の体重: {yesterdayWeight} g</p>
       </form>
-      <a onClick={handleGetWeights}>記録</a>
-      <List weights={weights} />
+      <button onClick={handleGetWeights}>履歴</button>
+      <List weights={weights} display={listToggle} />
     </React.Fragment>
   )
 }
 
-const List = (props) => {
-  if (props.weights.length == 0) return null
+const List = ({ weights, display }) => {
+  if (!display) return null
 
   return (
     <table width="200" border="1" style={{ borderCollapse: 'collapse' }}>
@@ -80,7 +86,7 @@ const List = (props) => {
           <th>日付</th>
           <th>体重</th>
         </tr>
-        {props.weights.map((weight, index) => {
+        {weights.map((weight, index) => {
           return (
             <tr key={index}>
               <td align="center">{moment(weight.date).format('YYYY-MM-DD')}</td>
