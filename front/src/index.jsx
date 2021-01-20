@@ -55,6 +55,11 @@ const App = () => {
     setListToggle(!listToggle)
   }
 
+  const calcDifference = () => {
+    if (weight === 0) return 0
+    return weight - yesterdayWeight
+  }
+
   return (
     <React.Fragment>
       <h1>わさ体重記録</h1>
@@ -67,7 +72,9 @@ const App = () => {
           onChange={handleChange}
         />
         <input type="submit" value="保存" />
-        <p>今日の体重: {weight} g</p>
+        <p>
+          今日の体重: {weight} g ({calcDifference()} g)
+        </p>
         <p>昨日の体重: {yesterdayWeight} g</p>
       </form>
       <button onClick={handleGetWeights}>履歴</button>
