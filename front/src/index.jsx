@@ -66,7 +66,7 @@ const App = () => {
       <p>{moment().format('YYYY-MM-DD')}</p>
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
+          type="number"
           name="weight"
           value={value}
           onChange={handleChange}
