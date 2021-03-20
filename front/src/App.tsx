@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { render } from 'react-dom'
 import axios from 'axios'
 import moment from 'moment'
 
@@ -12,8 +11,6 @@ const App = () => {
   const [value, setValue] = useState('')
   const [listToggle, setListToggle] = useState(false)
 
-  const date = new Date()
-
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(apiURL)
@@ -24,7 +21,7 @@ const App = () => {
     fetchData()
   }, [])
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     switch (event.target.name) {
       case 'weight':
         setValue(event.target.value)
@@ -32,7 +29,7 @@ const App = () => {
     }
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault()
 
     const newWeight = parseInt(value)
@@ -43,11 +40,11 @@ const App = () => {
     })
   }
 
-  const handleGetWeights = (event) => {
+  const handleGetWeights = (event: any) => {
     event.preventDefault()
 
     if (weights.length === 0) {
-      axios.get(apiURL + 'weights/all/').then((result) => {
+      axios.get(apiURL + 'weights/all/').then((result: any) => {
         setWeights(result.data)
       })
     }
@@ -83,17 +80,17 @@ const App = () => {
   )
 }
 
-const List = ({ weights, display }) => {
+const List = ({ weights, display }: { weights: any; display: any }) => {
   if (!display) return null
 
   return (
-    <table width="200" border="1" style={{ borderCollapse: 'collapse' }}>
+    <table width="200" style={{ borderCollapse: 'collapse' }}>
       <tbody>
         <tr>
           <th>日付</th>
           <th>体重</th>
         </tr>
-        {weights.map((weight, index) => {
+        {weights.map((weight: any, index: any) => {
           return (
             <tr key={index}>
               <td align="center">{moment(weight.date).format('YYYY-MM-DD')}</td>
@@ -106,4 +103,4 @@ const List = ({ weights, display }) => {
   )
 }
 
-render(<App />, document.getElementById('app'))
+export default App

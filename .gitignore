@@ -1,9 +1,12 @@
 front/node_modules/
 
 # yarn v2
-front/.yarn/cache
-front/.yarn/unplugged
-front/.yarn/build-state.yml
-front/.yarn/install-state.gz
+front/.yarn/*
+!front/.yarn/patches
+!front/.yarn/releases
+!front/.yarn/plugins
+!front/.yarn/sdks
+!front/.yarn/versions
 front/.pnp.*
 
+front/dist/
