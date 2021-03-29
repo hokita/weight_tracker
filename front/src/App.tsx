@@ -14,8 +14,8 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(apiURL)
-      setWeight(result.data.weight.weight)
-      setYesterdayWeight(result.data.yesterday_weight.weight)
+      setWeight(result.data[0].weight)
+      setYesterdayWeight(result.data[1].weight)
     }
 
     fetchData()
