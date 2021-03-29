@@ -3,26 +3,11 @@ package http
 import (
 	"encoding/json"
 	"net/http"
-	"time"
+
+	"github.com/hokita/weight_tracker/domain"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
-
-// Weight struct
-type Weight struct {
-	ID        int       `json:"id"`
-	Weight    int       `json:"weight"`
-	Date      time.Time `json:"date"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
-// TopParams struct
-type TopParams struct {
-	Weight          Weight `json:"weight"`
-	YesterdayWeight Weight `json:"yesterday_weight"`
-}
 
 type getWeightHandler struct {
 	DB *gorm.DB
@@ -31,16 +16,10 @@ type getWeightHandler struct {
 func (h *getWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	var todayWeight Weight
-	var YesterdayWeight Weight
-	h.DB.First(&todayWeight, "date = ?", time.Now())
-	h.DB.First(&YesterdayWeight, "date = ?", time.Now().AddDate(0, 0, -1))
+	repo := domain.WeightRepository{DB: h.DB}
+	weights := repo.GetCurrents()
 
-	tp := TopParams{
-		Weight:          todayWeight,
-		YesterdayWeight: YesterdayWeight,
-	}
-	if err := json.NewEncoder(w).Encode(tp); err != nil {
+	if err := json.NewEncoder(w).Encode(weights); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
@@ -68,16 +47,8 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	weight := Weight{
-		Weight: params.Weight,
-		Date:   time.Now(),
-	}
-
-	result := h.DB.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "date"}},
-		DoUpdates: clause.AssignmentColumns([]string{"weight"}),
-	}).Create(&weight)
-	if result.Error != nil {
+	repo := domain.WeightRepository{DB: h.DB}
+	if err := repo.Create(params.Weight); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -92,9 +63,9 @@ type getAllWeightsHandler struct {
 func (h *getAllWeightsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	var weights []Weight
-	result := h.DB.Order("date desc").Find(&weights)
-	if result.Error != nil {
+	repo := domain.WeightRepository{DB: h.DB}
+	weights, err := repo.GetAll()
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
