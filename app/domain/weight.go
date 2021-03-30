@@ -53,7 +53,7 @@ func (repo *WeightRepository) Create(value int, date time.Time) error {
 
 	result := repo.DB.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "date"}},
-		DoUpdates: clause.AssignmentColumns([]string{"weight"}),
+		DoUpdates: clause.AssignmentColumns([]string{"weight", "updated_at"}),
 	}).Create(&weight)
 	if result.Error != nil {
 		return result.Error
