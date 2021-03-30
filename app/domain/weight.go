@@ -45,10 +45,10 @@ func (repo *WeightRepository) GetCurrents() Weights {
 }
 
 // Create func
-func (repo *WeightRepository) Create(value int) error {
+func (repo *WeightRepository) Create(value int, date time.Time) error {
 	weight := Weight{
 		Weight: value,
-		Date:   time.Now(),
+		Date:   date,
 	}
 
 	result := repo.DB.Clauses(clause.OnConflict{

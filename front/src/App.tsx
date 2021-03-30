@@ -9,6 +9,7 @@ const App = () => {
   const [yesterdayWeight, setYesterdayWeight] = useState(0)
   const [weights, setWeights] = useState([])
   const [value, setValue] = useState('')
+  const [date, setDate] = useState('')
   const [listToggle, setListToggle] = useState(false)
 
   useEffect(() => {
@@ -21,10 +22,18 @@ const App = () => {
     fetchData()
   }, [])
 
-  const handleChange = (event: any) => {
+  const handleValueChange = (event: any) => {
     switch (event.target.name) {
       case 'weight':
         setValue(event.target.value)
+        break
+    }
+  }
+
+  const handleDateChange = (event: any) => {
+    switch (event.target.name) {
+      case 'date':
+        setDate(event.target.value)
         break
     }
   }
@@ -33,7 +42,7 @@ const App = () => {
     event.preventDefault()
 
     const newWeight = parseInt(value)
-    const params = JSON.stringify({ weight: newWeight })
+    const params = JSON.stringify({ weight: newWeight, date: date })
     axios.post(apiURL, params).then(() => {
       setWeight(newWeight)
       setValue('')
@@ -63,10 +72,16 @@ const App = () => {
       <p>{moment().format('YYYY-MM-DD')}</p>
       <form onSubmit={handleSubmit}>
         <input
+          type="date"
+          name="date"
+          value={date}
+          onChange={handleDateChange}
+        />
+        <input
           type="number"
           name="weight"
           value={value}
-          onChange={handleChange}
+          onChange={handleValueChange}
         />
         <input type="submit" value="保存" />
         <p>

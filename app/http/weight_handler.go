@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/hokita/weight_tracker/domain"
 
@@ -39,7 +40,8 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	var params struct {
-		Weight int `json:"weight"`
+		Weight int    `json:"weight"`
+		Date   string `json:"date"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
@@ -47,8 +49,17 @@ func (h *createWeightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	date, err := time.ParseInLocation("2006-01-02", params.Date, jst)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
 	repo := domain.WeightRepository{DB: h.DB}
-	if err := repo.Create(params.Weight); err != nil {
+	if err := repo.Create(params.Weight, date); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
