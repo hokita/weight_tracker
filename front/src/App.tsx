@@ -13,14 +13,14 @@ const App = () => {
   const [listToggle, setListToggle] = useState(false)
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios.get(apiURL)
-      setWeight(result.data[0].weight)
-      setYesterdayWeight(result.data[1].weight)
-    }
-
     fetchData()
   }, [])
+
+  const fetchData = async () => {
+    const result = await axios.get(apiURL)
+    setWeight(result.data[0].weight)
+    setYesterdayWeight(result.data[1].weight)
+  }
 
   const handleValueChange = (event: any) => {
     switch (event.target.name) {
@@ -41,10 +41,9 @@ const App = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault()
 
-    const newWeight = parseInt(value)
-    const params = JSON.stringify({ weight: newWeight, date: date })
+    const params = JSON.stringify({ weight: parseInt(value), date: date })
     axios.post(apiURL, params).then(() => {
-      setWeight(newWeight)
+      fetchData()
       setValue('')
     })
   }
