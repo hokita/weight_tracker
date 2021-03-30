@@ -9,7 +9,7 @@ const App = () => {
   const [yesterdayWeight, setYesterdayWeight] = useState(0)
   const [weights, setWeights] = useState([])
   const [value, setValue] = useState('')
-  const [date, setDate] = useState('')
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'))
   const [listToggle, setListToggle] = useState(false)
 
   useEffect(() => {
@@ -69,7 +69,6 @@ const App = () => {
   return (
     <React.Fragment>
       <h1>わさ体重記録</h1>
-      <p>{moment().format('YYYY-MM-DD')}</p>
       <form onSubmit={handleSubmit}>
         <input
           type="date"
