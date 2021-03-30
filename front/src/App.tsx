@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import moment from 'moment'
 
 const apiURL = `http://${process.env.API_DOMAIN}:8081/`
 
-const App = () => {
+const App: React.FC = () => {
   const [weight, setWeight] = useState(0)
   const [yesterdayWeight, setYesterdayWeight] = useState(0)
   const [weights, setWeights] = useState([])
@@ -22,7 +22,7 @@ const App = () => {
     setYesterdayWeight(result.data[1].weight)
   }
 
-  const handleValueChange = (event: any) => {
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (event.target.name) {
       case 'weight':
         setValue(event.target.value)
@@ -30,7 +30,7 @@ const App = () => {
     }
   }
 
-  const handleDateChange = (event: any) => {
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (event.target.name) {
       case 'date':
         setDate(event.target.value)
@@ -38,21 +38,21 @@ const App = () => {
     }
   }
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const params = JSON.stringify({ weight: parseInt(value), date: date })
+    const params = JSON.stringify({ weight: parseInt(value, 10), date })
     axios.post(apiURL, params).then(() => {
       fetchData()
       setValue('')
     })
   }
 
-  const handleGetWeights = (event: any) => {
+  const handleGetWeights = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     if (weights.length === 0) {
-      axios.get(apiURL + 'weights/all/').then((result: any) => {
+      axios.get(apiURL + 'weights/all/').then((result: AxiosResponse) => {
         setWeights(result.data)
       })
     }
@@ -93,7 +93,17 @@ const App = () => {
   )
 }
 
-const List = ({ weights, display }: { weights: any; display: any }) => {
+type Weight = {
+  date: string
+  weight: number
+}
+
+type Props = {
+  weights: Weight[]
+  display: boolean
+}
+
+const List: React.FC<Props> = ({ weights, display }) => {
   if (!display) return null
 
   return (
@@ -103,7 +113,7 @@ const List = ({ weights, display }: { weights: any; display: any }) => {
           <th>日付</th>
           <th>体重</th>
         </tr>
-        {weights.map((weight: any, index: any) => {
+        {weights.map((weight: Weight, index: number) => {
           return (
             <tr key={index}>
               <td align="center">{moment(weight.date).format('YYYY-MM-DD')}</td>
