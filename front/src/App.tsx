@@ -67,7 +67,7 @@ const App: React.FC = () => {
 
   return (
     <React.Fragment>
-      <h1>わさ体重記録</h1>
+      <h1>わさから体重記録</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="date"
